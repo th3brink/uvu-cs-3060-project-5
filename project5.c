@@ -35,7 +35,6 @@ int main ( ) {
 	printf("\t-Kory Kehl - 1043993\n");
 	
 
-	//switch statment
 	int child;
 	printf("creating child...\n");
 	child = fork();
