@@ -1,8 +1,22 @@
+/*
+Class CS 3060 - Project 5
+Students:
+-James Brinkerhoff - 10621032
+-Bryson Murray - 10501259
+-Kory Kehl - 1043993
+*/
+
 #include <stdio.h>
 #include <signal.h>
 #include <stdlib.h>
 
-void f(int);
+//void f(int);
+/*
+ parentFunction
+ Description: 
+ Return: None
+ Paramaters: Takes child ppid
+*/
 void parentFunction();
 void parentSigUser1Handler();
 void parentSigUser2Handler();
@@ -10,18 +24,20 @@ void childFunction();
 void childSigUser1Handler();
 void childSigUser2Handler();
 
-
+/*
+ 
+*/
 int main ( ) {
-	
+	printf("Class CS 3060 - Project 5\n");
 	printf("Students:\n");
 	printf("\t-James Brinkerhoff - 10621032\n");
 	printf("\t-Bryson Murray - 10501259\n");
 	printf("\t-Kory Kehl - 1043993\n");
-	printf("Class CS 3060 - Project 5\n");
+	
 
 	//switch statment
 	int child;
-	printf("creating child\n");
+	printf("creating child...\n");
 	child = fork();
 	int switchCommand = child;
 	if(child > 0)
@@ -54,7 +70,7 @@ int main ( ) {
     printf("\nOUCH\n");
 }*/
 
-void parentFunction(){
+void parentFunction() {
 	struct sigaction SIGUSER1;
 	SIGUSER1.sa_handler = parentSigUser1Handler;
 	sigemptyset(&SIGUSER1.sa_mask);
@@ -82,15 +98,15 @@ void parentFunction(){
         printf("parent stuff\n");
         sleep(1);*/
 }
-void parentSigUser1Handler(){
+void parentSigUser1Handler() {
 
 }
 
-void parentSigUser2Handler(){
+void parentSigUser2Handler() {
 
 }
 
-void childFunction(){
+void childFunction() {
 	struct sigaction SIGUSER1;
         SIGUSER1.sa_handler = childSigUser1Handler;
         sigemptyset(&SIGUSER1.sa_mask);
@@ -122,11 +138,11 @@ void childFunction(){
         exit(1);*/
 }
 
-void childSigUser1Handler(){
+void childSigUser1Handler() {
 
 }
 
-void childSigUser2Handler(){
+void childSigUser2Handler() {
 
 }
 
