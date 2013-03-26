@@ -1,0 +1,38 @@
+main methon that would call fork
+on a child it would call one func
+on a parent it would call another func
+
+*parentfunc(child ppid)
+ 2 signal handlers
+sighand1
+sighand2
+print message child started
+sleep 3
+
+*childfunc
+ 2 signal handlers
+sighand1
+sighand2
+print a message that indicates it is running
+wait for task start signal from parent use sidsuspend (on user 1)
+
+
+----
+then parrent wakes from sleep prints message 
+the kill(child user 1)
+sig suspend(user1)
+
+child
+print start
+sleep(3)
+kill parent kill(ppid user1)
+ then do work (interesting)
+prints message it is done
+sig suspends for user 2
+
+
+struct sigaction sigt
+
+sigt.sighandler = user1.handler;
+sig....= user2.handler;
+sigaction(siguser2, 
