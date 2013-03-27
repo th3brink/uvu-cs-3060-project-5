@@ -17,7 +17,7 @@ Students:
  Return: None
  Paramaters: Takes child ppid
 */
-void parentFunction();
+void parentFunction(int);
 void parentSigUser1Handler();
 void parentSigUser2Handler();
 void childFunction();
@@ -47,7 +47,7 @@ int main ( ) {
 	switch(switchCommand)
 	{
 		case 1:
-			parentFunction();
+			parentFunction(child);
 			break;
 		case 0:		
 			childFunction();
@@ -59,7 +59,7 @@ int main ( ) {
     	return 0;
 }
 
-void parentFunction() {
+void parentFunction(int childId) {
 
 	sigset_t masknew, maskold;
         int signum1 = SIGUSR1;
