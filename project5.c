@@ -56,37 +56,10 @@ int main ( ) {
 			printf("failed\n");                                      	
 			break;
 	}
-/*	int i;
-    	signal ( SIGINT, f); //install signal handler
-    	for (i = 0; i < 10; i++) {
-       		printf("hello\n");
-       		sleep(1);
-	}*/
     	return 0;
 }
 
-/*void f ( int signum )
-{
-    printf("\nOUCH\n");
-}*/
-
 void parentFunction() {
-/*	struct sigaction SIGUSER1;
-	SIGUSER1.sa_handler = parentSigUser1Handler;
-	sigemptyset(&SIGUSER1.sa_mask);
-	SIGUSER1.sa_flags = 0;
-	if(sigaction(SIGINT, &SIGUSER1, NULL)<0)
-	{
-		
-	}
-	struct sigaction SIGUSER2;
-        SIGUSER2.sa_handler = parentSigUser2Handler;
-        sigemptyset(&SIGUSER2.sa_mask);
-        SIGUSER2.sa_flags = 0;
-        if(sigaction(SIGINT, &SIGUSER2, NULL)<0)
-        {
-
-       	}*/
 
 	sigset_t masknew, maskold;
         int signum1 = SIGUSR1;
@@ -111,7 +84,6 @@ void parentFunction() {
 	sleep(3);
 	printf("p- Child Process Start\n");
         kill(childId,SIGUSR1);
-//        sigsuspend(&masknew);
 
 	while (sigreceived == 0)
                 sigsuspend(&masknew);
@@ -133,17 +105,7 @@ void parentFunction() {
         sigprocmask(SIG_SETMASK, &maskold, NULL);
 	
 	printf("p- %d Finished\n",getpid());
-	
-/*	printf("Parent Process\n");
-	sleep(1);
-        printf("parent stuff\n");
-        sleep(1);
-        printf("parent stuff\n");
-        sleep(1);
-        printf("parent stuff\n");
-        sleep(1);
-        printf("parent stuff\n");
-        sleep(1);*/
+
 }
 void parentSigUser1Handler() {
 
@@ -171,18 +133,6 @@ void childFunction() {
 
         }
 
-/* 	printf("child Process\n");
-        sleep(1);
-        printf("child stuff\n");
-        sleep(1);
-        printf("child stuff\n");
-        sleep(1);
-        printf("child stuff\n");
-        sleep(1);
-        printf("child stuff\n");
-        sleep(1);
-        printf("exiting child\n");
-        exit(1);*/
 }
 
 void childSigUser1Handler() {
