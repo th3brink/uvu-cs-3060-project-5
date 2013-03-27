@@ -24,6 +24,7 @@ void childFunction();
 void childSigUser1Handler();
 void childSigUser2Handler();
 
+static volatile sig_atomic_t sigreceived = 0;
 /*
  
 */
@@ -70,7 +71,7 @@ int main ( ) {
 }*/
 
 void parentFunction() {
-	struct sigaction SIGUSER1;
+/*	struct sigaction SIGUSER1;
 	SIGUSER1.sa_handler = parentSigUser1Handler;
 	sigemptyset(&SIGUSER1.sa_mask);
 	SIGUSER1.sa_flags = 0;
@@ -85,7 +86,54 @@ void parentFunction() {
         if(sigaction(SIGINT, &SIGUSER2, NULL)<0)
         {
 
-       	}
+       	}*/
+
+	sigset_t masknew, maskold;
+        int signum1 = SIGUSR1;
+        int signum2 = SIGUSR2;	
+
+	struct sigaction SIGUSER1;
+	SIGUSER1.sa_handler = parentSigUser1Handler;
+	sigemptyset(&SIGUSER1.sa_mask);
+	SIGUSER1.sa_flags = 0;
+	sigaction(SIGUSR1, &SIGUSER1, NULL);
+
+	struct sigaction SIGUSER2;
+        SIGUSER2.sa_handler = parentSigUser2Handler;
+        sigemptyset(&SIGUSER2.sa_mask);
+        SIGUSER2.sa_flags = 0;
+        sigaction(SIGUSR2, &SIGUSER2, NULL);
+
+	sigprocmask(SIG_SETMASK, NULL, &masknew);
+        sigaddset(&masknew, signum1);
+        sigprocmask(SIG_SETMASK, &masknew, &maskold);
+        sigdelset(&masknew, SIGUSR1);
+	sleep(3);
+	printf("p- Child Process Start\n");
+        kill(childId,SIGUSR1);
+//        sigsuspend(&masknew);
+
+	while (sigreceived == 0)
+                sigsuspend(&masknew);
+        sigreceived = 0;
+        sigprocmask(SIG_SETMASK, &maskold, NULL);
+	sleep(3);	
+
+	sigprocmask(SIG_SETMASK, NULL, &masknew);
+        sigaddset(&masknew, signum2);
+        sigprocmask(SIG_SETMASK, &masknew, &maskold);
+        sigdelset(&masknew, SIGUSR2);
+
+	kill(childId,SIGUSR2);
+	printf("p- Parent has sent SIGUSR2.\n");
+	
+	while (sigreceived == 0)
+                sigsuspend(&masknew);
+        sigreceived = 0;
+        sigprocmask(SIG_SETMASK, &maskold, NULL);
+	
+	printf("p- %d Finished\n",getpid());
+	
 /*	printf("Parent Process\n");
 	sleep(1);
         printf("parent stuff\n");
