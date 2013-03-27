@@ -3,7 +3,7 @@ Class CS 3060 - Project 5
 Students:
 -James Brinkerhoff - 10621032
 -Bryson Murray - 10501259
--Kory Kehl - 1043993
+-Kory Kehl - 10439952
 */
 
 #include <stdio.h>
@@ -33,7 +33,7 @@ int main ( ) {
 	printf("Students:\n");
 	printf("\t-James Brinkerhoff - 10621032\n");
 	printf("\t-Bryson Murray - 10501259\n");
-	printf("\t-Kory Kehl - 1043993\n");
+	printf("\t-Kory Kehl - 10439952\n");
 	
 
 	int child;
@@ -116,23 +116,59 @@ void parentSigUser2Handler() {
 }
 
 void childFunction() {
-	struct sigaction SIGUSER1;
-        SIGUSER1.sa_handler = childSigUser1Handler;
-        sigemptyset(&SIGUSER1.sa_mask);
-        SIGUSER1.sa_flags = 0;
-        if(sigaction(SIGINT, &SIGUSER1, NULL)<0)
-        {
+		sigset_t masknew, maskold; 
+		int signum1 = SIGUSR1; 
+		int signum2 = SIGUSR2; 
 
-        }
-        struct sigaction SIGUSER2;
-        SIGUSER2.sa_handler = childSigUser2Handler;
-        sigemptyset(&SIGUSER2.sa_mask);
-        SIGUSER2.sa_flags = 0;
-        if(sigaction(SIGINT, &SIGUSER2, NULL)<0)
-        {
+		struct sigaction SIGUSER1;
+	        SIGUSER1.sa_handler = childSigUser1Handler;
+	        sigemptyset(&SIGUSER1.sa_mask);
+	        SIGUSER1.sa_flags = 0;
+	        sigaction(SIGUSR1, &SIGUSER1, NULL);
 
-        }
+	        struct sigaction SIGUSER2;
+	        SIGUSER2.sa_handler = childSigUser2Handler;
+	        sigemptyset(&SIGUSER2.sa_mask);
+	        SIGUSER2.sa_flags = 0;
+		sigaction(SIGUSR2, &SIGUSER2, NULL);
 
+		sigprocmask(SIG_SETMASK, NULL, &masknew); 
+		sigaddset(&masknew, signum1); 
+		sigprocmask(SIG_SETMASK, &masknew, &maskold); 
+		sigdelset(&masknew, SIGUSR1);
+
+	/*	sigprocmask(SIG_SETMASK, NULL, &masknew);
+	        sigaddset(&masknew, signum2);
+	        sigprocmask(SIG_SETMASK, &masknew, &maskold);
+	        sigdelset(&masknew, SIGUSR2);*/
+
+		char waitingStartTask[] = "c- Child Running and Waiting for 'task start' Signal.\n";
+		write(1,waitingStartTask,strlen(waitingStartTask));
+
+		while (sigreceived == 0) 
+	   		sigsuspend(&masknew);
+		sigreceived = 0; 
+		sigprocmask(SIG_SETMASK, &maskold, NULL); 
+		printf("c- child starting task\n");
+		sleep(3);
+		kill(getppid(),SIGUSR1);
+
+		printf("c- does work\n");
+
+		sigprocmask(SIG_SETMASK, NULL, &masknew);
+	        sigaddset(&masknew, signum2);
+	        sigprocmask(SIG_SETMASK, &masknew, &maskold);
+	        sigdelset(&masknew, SIGUSR2);
+
+		while (sigreceived == 0)
+	                sigsuspend(&masknew);
+	        sigreceived = 0;
+	        sigprocmask(SIG_SETMASK, &maskold, NULL);
+
+		printf("c- work is done.\n");
+		kill(getppid(),SIGUSR2);
+		printf("c- %d Finished\n",getpid());
+	//	exit(1);
 }
 
 void childSigUser1Handler() {
