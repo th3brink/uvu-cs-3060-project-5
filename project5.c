@@ -107,12 +107,16 @@ void parentFunction() {
 	printf("p- %d Finished\n",getpid());
 
 }
-void parentSigUser1Handler() {
-
+void parentSigUser1Handler(){
+    char handlerMsg[] ="**** Parent SIGUSR1 handler - Received a 'task started' signal from child ****\n";
+        write(1, handlerMsg, strlen(handlerMsg));
+	sigreceived = 1;
 }
 
-void parentSigUser2Handler() {
-
+void parentSigUser2Handler(){
+	char handlerMsg[] ="**** Parent SIGUSR2 handler - Received a 'task completed' signal from the child ****\n";
+        write(1, handlerMsg, strlen(handlerMsg));
+	sigreceived = 1;
 }
 
 void childFunction() {
@@ -171,11 +175,15 @@ void childFunction() {
 	//	exit(1);
 }
 
-void childSigUser1Handler() {
-
+void childSigUser1Handler(){
+    char handlerMsg[] = "**** Child SIGUSR1 handler - Received a 'task start' signal from the parent process ***\n";
+        write(1, handlerMsg, strlen(handlerMsg));
+	sigreceived = 1;
 }
 
-void childSigUser2Handler() {
-
+void childSigUser2Handler(){
+	char handlerMsg[] ="**** Child SIGUSR2 handler - Received a 'task complete verification' signal from the parent ****\n";
+        write(1, handlerMsg, strlen(handlerMsg));
+	sigreceived = 1;
 }
 
