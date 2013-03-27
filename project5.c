@@ -10,24 +10,44 @@ Students:
 #include <signal.h>
 #include <stdlib.h>
 
-//void f(int);
-/*
- parentFunction
- Description: 
- Return: None
- Paramaters: Takes child ppid
-*/
+// parentFunction
+// Description: Code executed by the parent fork of the main
+// Return: none
+// Paramaters: int childId
 void parentFunction(int);
+
+// parentSigUser1Handler
+// Description: The signal handler for SIGUSR1 for the parent fork
+// Return: none
+// Paramaters: none
 void parentSigUser1Handler();
+
+// parentSigUser2Handler
+// Description: The signal handler for SIGUSR2 for the parent fork
+// Return: none
+// Paramaters: none
 void parentSigUser2Handler();
+
+// childFunction
+// Description: Code executed by the child fork of the main
+// Return: none
+// Paramaters: none
 void childFunction();
+
+// childSigUser1Handler
+// Description: The signal handler for SIGUSR1 for the child fork
+// Return: none
+// Paramaters: none
 void childSigUser1Handler();
+
+// childSigUser2Handler
+// Description: The signal handler for SIGUSR2 for the child fork
+// Return: none
+// Paramaters: none
 void childSigUser2Handler();
 
 static volatile sig_atomic_t sigreceived = 0;
-/*
- 
-*/
+
 int main ( ) {
 	printf("Class CS 3060 - Project 5\n");
 	printf("Students:\n");
@@ -107,6 +127,7 @@ void parentFunction(int childId) {
 	printf("p- %d Finished\n",getpid());
 
 }
+
 void parentSigUser1Handler(){
     char handlerMsg[] ="**** Parent SIGUSR1 handler - Received a 'task started' signal from child ****\n";
         write(1, handlerMsg, strlen(handlerMsg));
@@ -141,11 +162,6 @@ void childFunction() {
 		sigprocmask(SIG_SETMASK, &masknew, &maskold); 
 		sigdelset(&masknew, SIGUSR1);
 
-	/*	sigprocmask(SIG_SETMASK, NULL, &masknew);
-	        sigaddset(&masknew, signum2);
-	        sigprocmask(SIG_SETMASK, &masknew, &maskold);
-	        sigdelset(&masknew, SIGUSR2);*/
-
 		char waitingStartTask[] = "c- Child Running and Waiting for 'task start' Signal.\n";
 		write(1,waitingStartTask,strlen(waitingStartTask));
 
@@ -172,8 +188,8 @@ void childFunction() {
 		printf("c- work is done.\n");
 		kill(getppid(),SIGUSR2);
 		printf("c- %d Finished\n",getpid());
-	//	exit(1);
 }
+
 
 void childSigUser1Handler(){
     char handlerMsg[] = "**** Child SIGUSR1 handler - Received a 'task start' signal from the parent process ***\n";
